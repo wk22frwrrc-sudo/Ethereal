@@ -98,6 +98,31 @@
       background: rgba(40, 100, 180, 0.5); border-color: rgba(120, 190, 255, 0.5);
       box-shadow: 0 0 20px rgba(80, 160, 240, 0.3); transform: translateY(-2px);
     }
+    
+    .input-box {
+      display: block;
+      width: 260px;
+      margin: 15px auto;
+      padding: 14px 20px;
+      background: rgba(30, 80, 140, 0.3);
+      border: 1px solid rgba(100, 170, 240, 0.3);
+      border-radius: 8px;
+      color: #e0e8f0;
+      font-size: 1em;
+      text-align: center;
+      letter-spacing: 2px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+    .input-box:focus {
+      background: rgba(40, 100, 180, 0.4);
+      border-color: rgba(120, 190, 255, 0.6);
+      box-shadow: 0 0 20px rgba(80, 160, 240, 0.2);
+    }
+    .input-box::placeholder {
+      color: rgba(176, 208, 232, 0.4);
+    }
+
     .btn-group { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
 
     .page { display: none; }
@@ -166,11 +191,8 @@
   <div class="container page active" id="home">
     <h1>欢迎来到我的臆想</h1>
     <p class="subtitle">你要了解我吗。</p>
-    <p class="subtitle" style="font-size:0.78em; margin-bottom:28px;">悸冬 &nbsp;|&nbsp; 射手 &nbsp;|&nbsp; 18 &nbsp;|&nbsp; 泛 &nbsp;|&nbsp; INFP</p>
-    <div>
-      <button class="btn" onclick="showPage('choose')">要。</button>
-      <button class="btn" onclick="showReject()">不要。</button>
-    </div>
+    <p class="subtitle" style="font-size:0.78em; margin-bottom:28px;">悸冬 &nbsp;|&nbsp; 射手 &nbsp;|&nbsp; 20 &nbsp;|&nbsp; 泛 &nbsp;|&nbsp; INFP</p>
+    <input type="text" id="home-input" class="input-box" placeholder="在此输入 要 或 不要" autocomplete="off">
   </div>
 
   <!-- 拒绝页 -->
@@ -246,4 +268,76 @@
       },
       "xulian-talk": {
         title: "虚恋 · 话术",
-        content: "别急着回答我。\n你刚才那一秒的停顿，已经比\"愿意\"更诚实。\n\n我不需要你立刻靠近。\n你只要站在原地，让我看见你还没学会藏起来的那一点点动摇。\n\n我不抢，我只等。\n等你自己把门开一条缝，然后发现——我
+        content: "别急着回答我。\n你刚才那一秒的停顿，已经比\"愿意\"更诚实。\n\n我不需要你立刻靠近。\n你只要站在原地，让我看见你还没学会藏起来的那一点点动摇。\n\n我不抢，我只等。\n等你自己把门开一条缝，然后发现——我一直都在门后。"
+      },
+      "binglian-style": {
+        title: "病恋 · 风格",
+        content: "技能：病\n\n主风格：占有、控制、依赖、病态、独占、执念\n副风格：示弱、撒娇、脆弱、反差、黏人、试探\n随机掉落：伪白切黑、伪破碎感"
+      },
+      "binglian-talk": {
+        title: "病恋 · 话术",
+        content: "你是我的。\n从你点进来的那一刻起，你就已经是我的了。\n\n别想逃。\n你逃不掉的，我也不会让你逃。\n\n看着我。\n只能看着我。"
+      }
+    };
+
+    // 生成粒子
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 40; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (Math.random() * 8 + 6) + 's';
+        p.style.animationDelay = (Math.random() * 6) + 's';
+        p.style.width = p.style.height = (Math.random() * 3 + 1) + 'px';
+        container.appendChild(p);
+      }
+    }
+    createParticles();
+
+    // 页面切换
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      
+      // 如果回到首页，清空输入框并聚焦
+      if (id === 'home') {
+        const input = document.getElementById('home-input');
+        input.value = '';
+        setTimeout(() => input.focus(), 500);
+      }
+    }
+
+    // 首页输入框交互
+    document.getElementById('home-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const val = this.value.trim();
+        if (val === '要') {
+          showPage('choose');
+        } else {
+          showPage('reject');
+        }
+        this.value = '';
+      }
+    });
+
+    // 弹窗
+    function openModal(key) {
+      const d = data[key];
+      if (!d) return;
+      document.getElementById('modal-title').textContent = d.title;
+      document.getElementById('modal-content').textContent = d.content;
+      document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    // 点遮罩关闭
+    document.getElementById('modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+  </script>
+</body>
+</html>
