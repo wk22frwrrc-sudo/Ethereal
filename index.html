@@ -3,331 +3,341 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>欢迎来到我的臆想</title>
+  <title>三恋资料</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      min-height: 100vh;
-      /* 浅蓝色渐变模拟天空和浅海 */
-      background: linear-gradient(180deg, #87CEEB 0%, #5B9BD5 60%, #2980b9 100%);
       font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-      color: #2c3e50;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      min-height: 100vh;
       overflow: hidden;
       position: relative;
+      background: linear-gradient(180deg, #a8d8ea 0%, #d4e8f0 40%, #e8f4f8 70%, #b8d4e3 100%);
     }
 
-    /* 底部动态水波纹 */
-    .water {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 20vh;
-      overflow: hidden;
+    /* ===== 天空与云 ===== */
+    #sky {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 60%;
       z-index: 0;
     }
-    .wave {
+    .cloud {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 200%;
-      height: 100%;
-      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M321.39 56.44c58-10.79 114.16-30.13 172-41.86 82.39-16.72 168.19-17.73 250.45-.39C823.78 31 906.67 72 985.66 92.83c70.05 18.48 146.53 26.09 214.34 3V120H0V30c0 0 0-13.73 321.39 26.44z" fill="%23ffffff" fill-opacity="0.5"/></svg>');
-      background-size: 50% 100%;
-      animation: waveMove 20s linear infinite;
+      background: rgba(255,255,255,0.85);
+      border-radius: 50%;
+      filter: blur(2px);
+      animation: drift linear infinite;
     }
-    .wave:nth-child(2) {
-      bottom: 10px;
-      opacity: 0.7;
-      animation: waveMove 15s linear infinite reverse;
+    .cloud::before, .cloud::after {
+      content: ''; position: absolute;
+      background: inherit; border-radius: 50%;
     }
-    @keyframes waveMove {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+    .cloud::before {
+      width: 60%; height: 120%;
+      top: -40%; left: 15%;
+    }
+    .cloud::after {
+      width: 45%; height: 100%;
+      top: -20%; right: 15%;
+    }
+    @keyframes drift {
+      from { transform: translateX(-200px); }
+      to   { transform: translateX(calc(100vw + 200px)); }
     }
 
-    /* 玻璃风铃 */
-    .wind-chime-container {
-      position: fixed;
-      top: 0;
-      right: 10%;
-      z-index: 5;
+    /* ===== 海洋波纹 ===== */
+    .ocean {
+      position: fixed; bottom: 0; left: 0;
+      width: 100%; height: 35%;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .wave {
+      position: absolute; bottom: 0; left: -5%;
+      width: 110%; height: 100%;
+    }
+    .wave svg { width: 100%; height: 100%; }
+
+    /* ===== 风铃 ===== */
+    .wind-chime {
+      position: fixed; top: 10px; right: 20px;
+      z-index: 10;
+      animation: swing 3s ease-in-out infinite;
+      transform-origin: top center;
+      cursor: pointer;
+    }
+    .wind-chime .chime-top {
+      width: 40px; height: 6px;
+      background: #c9a96e;
+      border-radius: 3px;
+      margin: 0 auto;
+    }
+    .wind-chime .chime-string {
+      width: 2px; height: 30px;
+      background: #c9a96e;
+      margin: 0 auto;
+    }
+    .wind-chime .chime-bell {
+      width: 28px; height: 28px;
+      background: radial-gradient(circle at 40% 35%, #f5e6c8, #c9a96e);
+      border-radius: 50%;
+      margin: 0 auto;
+      position: relative;
+    }
+    .wind-chime .chime-bell::after {
+      content: '';
+      position: absolute; bottom: -8px; left: 50%;
+      transform: translateX(-50%);
+      width: 2px; height: 12px;
+      background: #c9a96e;
+    }
+    .wind-chime .chime-bell::before {
+      content: '';
+      position: absolute; bottom: -14px; left: 50%;
+      transform: translateX(-50%);
+      width: 8px; height: 8px;
+      background: #c9a96e;
+      border-radius: 50%;
+    }
+    @keyframes swing {
+      0%, 100% { transform: rotate(-5deg); }
+      50%      { transform: rotate(5deg); }
+    }
+
+    /* ===== 主容器（磨砂玻璃） ===== */
+    .container {
+      position: relative; z-index: 5;
+      max-width: 420px;
+      margin: 60px auto 40px;
+      padding: 36px 28px 32px;
+      background: rgba(255,255,255,0.35);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 8px 32px rgba(100,140,180,0.18);
+      text-align: center;
+      min-height: 400px;
+      display: none;
+    }
+    .container.active { display: block; }
+
+    /* ===== 首页 ===== */
+    .home-title {
+      font-size: 1.25em;
+      color: #3a5a6e;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+      line-height: 1.6;
+    }
+    .home-info {
+      font-size: 0.85em;
+      color: #6a8a9a;
+      margin-bottom: 32px;
+      letter-spacing: 2px;
+    }
+    .home-info span { margin: 0 4px; }
+
+    /* ===== 按钮组 ===== */
+    .btn-group {
       display: flex;
       flex-direction: column;
+      gap: 14px;
       align-items: center;
     }
-    .chime-top {
-      width: 60px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.6);
-      border-radius: 2px;
-    }
-    .chime-string {
-      width: 2px;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.4);
-    }
-    .chime-bell {
-      width: 40px;
-      height: 40px;
-      /* 透明玻璃质感 */
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1) 60%, rgba(255,255,255,0.3));
-      border: 1px solid rgba(255,255,255,0.5);
-      border-radius: 50%;
-      box-shadow: 0 4px 15px rgba(255,255,255,0.6), inset 0 0 10px rgba(255,255,255,0.5);
-      position: relative;
-      transform-origin: top center;
-      animation: bellSway 4s ease-in-out infinite;
-    }
-    .chime-clapper {
-      position: absolute;
-      bottom: -15px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 12px;
-      height: 12px;
-      background: #fff;
-      border-radius: 50%;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      animation: clapperSway 4s ease-in-out infinite;
-    }
-    @keyframes bellSway {
-      0%, 100% { transform: rotate(-8deg); }
-      50% { transform: rotate(8deg); }
-    }
-    @keyframes clapperSway {
-      0%, 100% { transform: translateX(-50%) rotate(15deg); }
-      50% { transform: translateX(-50%) rotate(-15deg); }
-    }
-
-    /* 主容器（磨砂玻璃效果） */
-    .container {
-      position: relative; 
-      z-index: 10; 
-      text-align: center; 
-      max-width: 600px; 
-      width: 90%;
-      padding: 40px 30px; 
-      background: rgba(255, 255, 255, 0.3); /* 浅蓝色半透明背景 */
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      border-radius: 20px; 
-      backdrop-filter: blur(15px); 
-      box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3);
-      color: #1a3a5c;
-    }
-
-    h1 { font-size: 1.8em; font-weight: 300; letter-spacing: 4px; margin-bottom: 12px; color: #1a3a5c; }
-    .subtitle { font-size: 0.85em; color: #4a6f8c; letter-spacing: 2px; margin-bottom: 30px; }
-
     .btn {
-      display: inline-block; padding: 12px 36px; margin: 10px 12px;
-      background: rgba(255, 255, 255, 0.4); 
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 8px; color: #1a3a5c; font-size: 1em; cursor: pointer;
-      transition: all 0.3s ease; letter-spacing: 2px;
+      width: 70%;
+      padding: 12px 0;
+      border: none;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.55);
+      color: #3a5a6e;
+      font-size: 1em;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(6px);
     }
     .btn:hover {
-      background: rgba(255, 255, 255, 0.7); 
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); 
+      background: rgba(255,255,255,0.8);
       transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(100,140,180,0.2);
     }
-    
-    .input-box {
-      display: block;
-      width: 260px;
-      margin: 15px auto;
-      padding: 14px 20px;
-      background: rgba(255, 255, 255, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 8px;
-      color: #1a3a5c;
-      font-size: 1em;
-      text-align: center;
-      letter-spacing: 2px;
-      transition: all 0.3s ease;
-      outline: none;
+    .btn-row {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
-    .input-box:focus {
-      background: rgba(255, 255, 255, 0.7);
-      border-color: rgba(255, 255, 255, 0.9);
-    }
-    .input-box::placeholder {
-      color: rgba(26, 58, 92, 0.5);
-    }
+    .btn-row .btn { width: auto; min-width: 100px; padding: 10px 22px; }
 
-    .btn-group { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
-
-    .page { display: none; }
-    .page.active { display: block; animation: fadeIn 0.5s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+    /* ===== 返回按钮 ===== */
     .back-btn {
-      display: inline-block; margin-top: 24px; padding: 8px 24px;
-      background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: 6px; color: #2c3e50; font-size: 0.9em; cursor: pointer; transition: all 0.3s ease;
+      margin-top: 28px;
+      padding: 8px 24px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.3);
+      color: #6a8a9a;
+      font-size: 0.85em;
+      cursor: pointer;
+      transition: all 0.3s;
     }
-    .back-btn:hover { background: rgba(255, 255, 255, 0.5); }
+    .back-btn:hover { background: rgba(255,255,255,0.55); }
 
+    /* ===== 弹窗遮罩 ===== */
     .modal-overlay {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(41, 128, 185, 0.3); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(5px);
+      position: fixed; inset: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(6px);
+      display: none;
+      justify-content: center;
+      align-items: center;
     }
     .modal-overlay.active { display: flex; }
 
     .modal-box {
-      background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(255, 255, 255, 0.8);
-      border-radius: 14px; padding: 30px; max-width: 520px; width: 90%; max-height: 70vh; overflow-y: auto;
-      text-align: left; line-height: 1.9; font-size: 0.95em; color: #1a3a5c;
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1); position: relative;
+      max-width: 380px;
+      width: 90%;
+      max-height: 75vh;
+      overflow-y: auto;
+      padding: 28px 24px;
+      background: rgba(255,255,255,0.88);
+      border-radius: 20px;
+      text-align: left;
+      position: relative;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
     }
     .modal-box::-webkit-scrollbar { width: 4px; }
-    .modal-box::-webkit-scrollbar-thumb { background: rgba(41, 128, 185, 0.3); border-radius: 2px; }
+    .modal-box::-webkit-scrollbar-thumb { background: #c9d6df; border-radius: 4px; }
 
     .modal-close {
-      position: absolute; top: 12px; right: 16px; background: none; border: none;
-      color: #4a6f8c; font-size: 1.4em; cursor: pointer; transition: color 0.2s;
+      position: absolute; top: 12px; right: 16px;
+      background: none; border: none;
+      font-size: 1.4em; color: #9ab;
+      cursor: pointer;
     }
-    .modal-close:hover { color: #1a3a5c; }
-
     .modal-title {
-      font-size: 1.1em; color: #1a3a5c; margin-bottom: 16px; padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.6); letter-spacing: 2px; font-weight: bold;
+      font-size: 1.1em;
+      color: #3a5a6e;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(100,140,180,0.2);
     }
-    .modal-content { white-space: pre-wrap; }
+    .modal-content {
+      font-size: 0.9em;
+      color: #4a6a7a;
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
 
-    .reject-msg { font-size: 1.1em; color: #4a6f8c; letter-spacing: 3px; margin-bottom: 20px; }
-
-    .notice-text { text-align: left; line-height: 2; font-size: 0.95em; color: #2c3e50; }
-    .notice-text p { margin-bottom: 10px; }
-    
-    .style-text { text-align: left; line-height: 2; font-size: 0.95em; color: #2c3e50; }
-    .style-tag { background: rgba(255,255,255,0.4); padding: 2px 8px; border-radius: 4px; margin: 2px; display: inline-block; }
-
-    .audio-btn {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      z-index: 100;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      display: flex;
+    /* ===== 提示弹窗 ===== */
+    .toast-overlay {
+      position: fixed; inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.3);
+      display: none;
       justify-content: center;
       align-items: center;
-      cursor: pointer;
-      font-size: 20px;
-      color: #fff;
-      backdrop-filter: blur(5px);
-      transition: all 0.3s ease;
     }
-    .audio-btn.playing {
-      background: rgba(255, 255, 255, 0.6);
-      color: #1a3a5c;
+    .toast-overlay.active { display: flex; }
+    .toast-box {
+      padding: 24px 36px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 16px;
+      font-size: 1em;
+      color: #3a5a6e;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      text-align: center;
     }
   </style>
 </head>
 <body>
 
-  <!-- 底部水波背景 -->
-  <div class="water">
-    <div class="wave"></div>
-    <div class="wave"></div>
+  <!-- 天空 -->
+  <div id="sky"></div>
+
+  <!-- 海洋 -->
+  <div class="ocean">
+    <div class="wave" style="opacity:0.55;">
+      <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path fill="#8ec5d6" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,218.7C672,235,768,245,864,234.7C960,224,1056,192,1152,181.3C1248,171,1344,181,1392,186.7L1440,192L1440,320L0,320Z"/>
+      </svg>
+    </div>
+    <div class="wave" style="opacity:0.4; animation-delay:-2s;">
+      <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path fill="#7ab8cc" d="M0,256L48,240C96,224,192,192,288,186.7C384,181,480,203,576,213.3C672,224,768,224,864,213.3C960,203,1056,181,1152,181.3C1248,181,1344,203,1392,213.3L1440,224L1440,320L0,320Z"/>
+      </svg>
+    </div>
+    <div class="wave" style="opacity:0.3; animation-delay:-4s;">
+      <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path fill="#69aabe" d="M0,288L48,272C96,256,192,224,288,213.3C384,203,480,213,576,224C672,235,768,245,864,240C960,235,1056,213,1152,208C1248,203,1344,213,1392,218.7L1440,224L1440,320L0,320Z"/>
+      </svg>
+    </div>
   </div>
 
-  <!-- 透明风铃 -->
-  <div class="wind-chime-container">
+  <!-- 风铃 -->
+  <div class="wind-chime">
     <div class="chime-top"></div>
     <div class="chime-string"></div>
-    <div class="chime-bell">
-      <div class="chime-clapper"></div>
+    <div class="chime-bell"></div>
+  </div>
+
+  <!-- ===== 首页 ===== -->
+  <div class="container active" id="home">
+    <div class="home-title">欢迎来到我的臆想 你要了解我吗？</div>
+    <div class="home-info">
+      <span>悸冬</span> · <span>射手</span> · <span>18</span> · <span>泛</span> · <span>INFP</span>
+    </div>
+    <div class="btn-group">
+      <button class="btn" onclick="showPage('choose')">要。</button>
+      <button class="btn" onclick="showReject()">不要。</button>
     </div>
   </div>
 
-  <!-- 音频按钮 -->
-  <div class="audio-btn" id="audio-btn" onclick="toggleAudio()">🔇</div>
-  
-  <!-- 模拟水流声和风铃声 -->
-  <!-- 注意：GitHub Pages 无法直接上传音频文件，这里使用 Base64 数据或外部链接。 -->
-  <!-- 为了代码能直接跑通且不依赖外部链接（防止失效），这里使用了一个静音占位， -->
-  <!-- 实际使用时建议上传音频文件到仓库并修改 src -->
-  <audio id="bg-audio" loop>
-    <!-- 这里替换成你上传到 GitHub 仓库里的音频文件名，例如 audio.mp3 -->
-    <source src="" type="audio/mpeg">
-  </audio>
-
-  <!-- 首页 -->
-  <div class="container page active" id="home">
-    <h1>欢迎来到我的臆想</h1>
-    <p class="subtitle">你要了解我吗。</p>
-    <p class="subtitle" style="font-size:0.78em; margin-bottom:28px;">悸冬 &nbsp;|&nbsp; 射手 &nbsp;|&nbsp; 20 &nbsp;|&nbsp; 泛 &nbsp;|&nbsp; INFP</p>
-    <input type="text" id="home-input" class="input-box" placeholder="在此输入 要 或 不要" autocomplete="off">
-  </div>
-
-  <!-- 拒绝页 -->
-  <div class="container page" id="reject">
-    <p class="reject-msg">希望你下次你来了解我。</p>
-    <button class="back-btn" onclick="showPage('home')">返回首页</button>
-  </div>
-
-  <!-- 选择页 -->
-  <div class="container page" id="choose">
-    <h1 style="font-size:1.3em;">你要了解虚恋、病恋，还是我。</h1>
-    <div class="btn-group" style="margin-top:24px;">
+  <!-- ===== 选择页 ===== -->
+  <div class="container" id="choose">
+    <h2 style="font-size:1.15em;color:#3a5a6e;margin-bottom:24px;">你要了解虚恋、病恋，还是我？</h2>
+    <div class="btn-group">
+      <button class="btn" onclick="showPage('xulian')">虚恋</button>
       <button class="btn" onclick="showPage('binglian')">病恋</button>
-      <button class="btn" onclick="showPage('notice')">须知</button>
+      <button class="btn" onclick="showPage('xuzhi')">须知</button>
     </div>
     <button class="back-btn" onclick="showPage('home')">返回首页</button>
   </div>
 
-  <!-- 病恋页 -->
-  <div class="container page" id="binglian">
-    <h1 style="font-size:1.3em;">病恋</h1>
-    <div class="btn-group" style="margin-top:24px;">
-      <button class="btn" onclick="openModal('binglian-style')">风格</button>
-      <button class="btn" onclick="openModal('binglian-talk')">话术</button>
+  <!-- ===== 虚恋页 ===== -->
+  <div class="container" id="xulian">
+    <h2 style="font-size:1.15em;color:#3a5a6e;margin-bottom:24px;">虚恋</h2>
+    <div class="btn-group">
+      <button class="btn" onclick="openModal('xulian_style')">风格</button>
+      <button class="btn" onclick="openModal('xulian_huashu')">话术</button>
     </div>
     <button class="back-btn" onclick="showPage('choose')">返回</button>
   </div>
 
-  <!-- 须知页 -->
-  <div class="container page" id="notice">
-    <h1 style="font-size:1.3em;">下单须知</h1>
-    <div class="notice-text" style="margin-top:20px;">
-      <p><strong>·单前/后</strong></p>
-      <p>不接陌生指定，请谅解</p>
-      <p>状态不稳定，请慎重下单</p>
-      <p>后续非个人原因不接受因踩暗雷/风格不符etc.导致的客诉</p>
-      <p>单口/互提前告知并补差价</p>
-      <p>录屏截图请提前告知，禁止外传</p>
-      <p>请提前告知称呼喜雷，若踩暗雷概不负责</p>
-      <p>拒恶意、抽象、开黄腔或玩笑过度 。如果这种情况我有权拒绝，默认送单</p>
-      <p>10min未赴约默认存  鸽三次视为送单</p>
-      <p>60前10 / 30前5说明理由可退  过时不退  拒结单后客诉</p>
-      <p><strong>·单内</strong></p>
-      <p>禁止模仿 抄袭话术 未经同意将单内截录屏外传</p>
-      <p>风格未经指定则会依据您的状态随机掉落</p>
-      <p>请尽情探索未知</p>
-      <p>默认回合制</p>
-      <p>抽象板/熟人不披甲 默认无喜雷</p>
-      <p>恶意把我当消遣会对应收回一部分情感</p>
-      <p>我需要回应 不然会变成哑巴</p>
-      <p>同行挑刺创我也变哑巴</p>
-      <p>打字速度一般且每单时长根据单内情况±5min内波动 介意请勿下单</p>
-      <p>旁观请自觉跟上 因自身原因漏看与本人无关</p>
-      <p>旁观在单期间请勿发言 违者永拒</p>
-      <p>一切请以个人体验为前提 如果在单过程中如有不适请发“1”或者“悸冬/癔症请停下”叫停</p>
+  <!-- ===== 病恋页 ===== -->
+  <div class="container" id="binglian">
+    <h2 style="font-size:1.15em;color:#3a5a6e;margin-bottom:24px;">病恋</h2>
+    <div class="btn-group">
+      <button class="btn" onclick="openModal('binglian_style')">风格</button>
+      <button class="btn" onclick="openModal('binglian_huashu')">话术</button>
     </div>
     <button class="back-btn" onclick="showPage('choose')">返回</button>
   </div>
 
-  <!-- 弹窗 -->
-  <div class="modal-overlay" id="modal">
+  <!-- ===== 须知页 ===== -->
+  <div class="container" id="xuzhi">
+    <h2 style="font-size:1.15em;color:#3a5a6e;margin-bottom:24px;">须知</h2>
+    <div class="btn-group">
+      <button class="btn" onclick="openModal('xuzhi_content')">查看须知</button>
+    </div>
+    <button class="back-btn" onclick="showPage('choose')">返回</button>
+  </div>
+
+  <!-- ===== 弹窗 ===== -->
+  <div class="modal-overlay" id="modal-overlay">
     <div class="modal-box">
       <button class="modal-close" onclick="closeModal()">×</button>
       <div class="modal-title" id="modal-title"></div>
@@ -335,82 +345,78 @@
     </div>
   </div>
 
+  <!-- ===== 提示弹窗 ===== -->
+  <div class="toast-overlay" id="toast-overlay" onclick="closeToast()">
+    <div class="toast-box" id="toast-box"></div>
+  </div>
+
   <script>
-    // 数据配置
-    const data = {
-      "binglian-style": {
-        title: "病恋 · 风格",
-        content: "【主旋律】\n上位 | 钓系 | 恶趣味 | 低无 | 诱导\n\n【副旋律】\n温/高恋 | 剖析 | 白切黑 | 微文\n\n【随机旋律】\n黄暴 | 高擦 | 伪安抚 | 精控 | 神学\n\n【人设play】\n（请尽情探索未知）"
-      },
-      "binglian-talk": {
-        title: "病恋 · 话术",
-        content: "你是我的。\n从你点进来的那一刻起，你就已经是我的了。\n\n别想逃。\n你逃不掉的，我也不会让你逃。\n\n看着我。\n只能看着我。\n\n我需要回应，不然会变成哑巴。"
-      }
-    };
-
-    // 页面切换
+    // ===== 页面切换 =====
     function showPage(id) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.container').forEach(p => p.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      
-      // 如果回到首页，清空输入框并聚焦
-      if (id === 'home') {
-        const input = document.getElementById('home-input');
-        input.value = '';
-        setTimeout(() => input.focus(), 500);
-      }
     }
 
-    // 首页输入框交互
-    document.getElementById('home-input').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        const val = this.value.trim();
-        if (val === '要') {
-          showPage('choose');
-        } else {
-          showPage('reject');
-        }
-        this.value = '';
-      }
-    });
-
-    // 弹窗
-    function openModal(key) {
-      const d = data[key];
-      if (!d) return;
-      document.getElementById('modal-title').textContent = d.title;
-      document.getElementById('modal-content').textContent = d.content;
-      document.getElementById('modal').classList.add('active');
+    // ===== "不要" 提示 =====
+    function showReject() {
+      const toast = document.getElementById('toast-overlay');
+      document.getElementById('toast-box').textContent = '希望下次你能来了解我';
+      toast.classList.add('active');
+      setTimeout(() => {
+        closeToast();
+        showPage('home');
+      }, 1800);
+    }
+    function closeToast() {
+      document.getElementById('toast-overlay').classList.remove('active');
     }
 
-    function closeModal() {
-      document.getElementById('modal').classList.remove('active');
-    }
+    // ===== 弹窗数据 =====
+    const modalData = {
+      xulian_style: {
+        title: '虚恋 · 风格',
+        content:
+`主风格：低无 · 引导 · 钓系 · 动物塑 · 文艺 · 上位 · 剖析
+副风格：伪下位 · 恶趣味 · 高恋 · 日常 · 安抚 · 高压
+随机掉落：伪白骑士 · 伪骨科人设`
+      },
+      xulian_huashu: {
+        title: '虚恋 · 话术',
+        content: '（此处填写虚恋话术内容）'
+      },
+      binglian_style: {
+        title: '病恋 · 风格',
+        content:
+`主旋律：上位 | 钓系 | 恶趣味 | 低无 | 诱导
+副旋律：温 / 高恋 | 剖析 | 白切黑 | 微文
+随机旋律：黄暴 | 高擦 | 伪安抚 | 精控 | 神学
+人设 play`
+      },
+      binglian_huashu: {
+        title: '病恋 · 话术',
+        content: '（此处填写病恋话术内容）'
+      },
+      xuzhi_content: {
+        title: '须知',
+        content:
+`单前 / 后
+不接陌生指定，请谅解
+状态不稳定，请慎重下单
+后续非个人原因不接受因踩暗雷 / 风格不符 etc. 导致的客诉
+单口 / 互提前告知并补差价
+录屏截图请提前告知，禁止外传
+请提前告知称呼喜雷，若踩暗雷概不负责
+拒恶意、抽象、开黄腔或玩笑过度。如果这种情况我有权拒绝，默认送单
+10min 未赴约默认存，鸽三次视为送单
+60 前 10 / 30 前 5 说明理由可退，过时不退，拒结单后客诉
 
-    // 点遮罩关闭
-    document.getElementById('modal').addEventListener('click', function(e) {
-      if (e.target === this) closeModal();
-    });
-
-    // 音频控制
-    const audio = document.getElementById('bg-audio');
-    const audioBtn = document.getElementById('audio-btn');
-    let isPlaying = false;
-
-    function toggleAudio() {
-      if (isPlaying) {
-        audio.pause();
-        audioBtn.textContent = '🔇';
-        audioBtn.classList.remove('playing');
-      } else {
-        // 注意：由于没有真实的音频文件，这里只是切换按钮状态
-        // 如果你有音频文件，请上传到 GitHub 并修改 audio 标签里的 src
-        audio.play().catch(e => console.log('请上传音频文件以播放声音'));
-        audioBtn.textContent = '🔊';
-        audioBtn.classList.add('playing');
-      }
-      isPlaying = !isPlaying;
-    }
-  </script>
-</body>
-</html>
+单内
+禁止模仿、抄袭话术，未经同意将单内截录屏外传
+风格未经指定则会依据您的状态随机掉落，请尽情探索未知
+默认回合制
+抽象板 / 熟人不披甲，默认无喜雷
+恶意把我当消遣会对应收回一部分情感
+我需要回应，不然会变成哑巴
+同行挑刺创我也变哑巴
+打字速度一般，且每单时长根据单内情况 ±5min 内波动，介意请勿下单
+旁观请自觉跟上，因自身原因漏看与本人无关
