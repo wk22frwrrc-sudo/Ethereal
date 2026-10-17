@@ -9,94 +9,131 @@
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #0a1628, #1a3a5c, #0d2137, #162d4a);
-      background-size: 400% 400%;
-      animation: gradientMove 12s ease infinite;
+      /* 浅蓝色渐变模拟天空和浅海 */
+      background: linear-gradient(180deg, #87CEEB 0%, #5B9BD5 60%, #2980b9 100%);
       font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-      color: #e0e8f0;
+      color: #2c3e50;
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
+      position: relative;
     }
 
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    /* 底部动态水波纹 */
+    .water {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 20vh;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M321.39 56.44c58-10.79 114.16-30.13 172-41.86 82.39-16.72 168.19-17.73 250.45-.39C823.78 31 906.67 72 985.66 92.83c70.05 18.48 146.53 26.09 214.34 3V120H0V30c0 0 0-13.73 321.39 26.44z" fill="%23ffffff" fill-opacity="0.5"/></svg>');
+      background-size: 50% 100%;
+      animation: waveMove 20s linear infinite;
+    }
+    .wave:nth-child(2) {
+      bottom: 10px;
+      opacity: 0.7;
+      animation: waveMove 15s linear infinite reverse;
+    }
+    @keyframes waveMove {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
 
-    /* 风铃容器 */
+    /* 玻璃风铃 */
     .wind-chime-container {
       position: fixed;
       top: 0;
-      right: 60px;
-      z-index: 10;
-    }
-
-    .wind-chime {
+      right: 10%;
+      z-index: 5;
       display: flex;
       flex-direction: column;
       align-items: center;
-      animation: sway 4s ease-in-out infinite;
-      transform-origin: top center;
     }
-
-    .wind-chime:nth-child(2) { animation-delay: 0.8s; margin-left: 30px; }
-    .wind-chime:nth-child(3) { animation-delay: 1.6s; margin-left: -15px; }
-
-    @keyframes sway {
-      0%, 100% { transform: rotate(-5deg); }
-      50% { transform: rotate(5deg); }
+    .chime-top {
+      width: 60px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 2px;
     }
-
-    .chime-top { width: 40px; height: 8px; background: linear-gradient(to bottom, #c0c8d0, #8899aa); border-radius: 4px; }
-    .chime-string { width: 2px; height: 60px; background: linear-gradient(to bottom, #8899aa, #667788); }
+    .chime-string {
+      width: 2px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.4);
+    }
     .chime-bell {
-      width: 24px; height: 32px;
-      background: linear-gradient(135deg, #d4dce6, #a0b0c0, #8899aa);
-      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      width: 40px;
+      height: 40px;
+      /* 透明玻璃质感 */
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1) 60%, rgba(255,255,255,0.3));
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 50%;
+      box-shadow: 0 4px 15px rgba(255,255,255,0.6), inset 0 0 10px rgba(255,255,255,0.5);
       position: relative;
-      box-shadow: 0 2px 8px rgba(100, 150, 200, 0.3);
+      transform-origin: top center;
+      animation: bellSway 4s ease-in-out infinite;
     }
-    .chime-bell::after {
-      content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
-      width: 6px; height: 10px; background: #8899aa; border-radius: 0 0 3px 3px;
+    .chime-clapper {
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      animation: clapperSway 4s ease-in-out infinite;
     }
-    .chime-tag { width: 12px; height: 20px; background: linear-gradient(to bottom, #b0c0d0, #90a0b0); margin-top: 4px; border-radius: 2px; }
+    @keyframes bellSway {
+      0%, 100% { transform: rotate(-8deg); }
+      50% { transform: rotate(8deg); }
+    }
+    @keyframes clapperSway {
+      0%, 100% { transform: translateX(-50%) rotate(15deg); }
+      50% { transform: translateX(-50%) rotate(-15deg); }
+    }
 
-    /* 粒子背景 */
-    .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-    .particle {
-      position: absolute; width: 3px; height: 3px; background: rgba(150, 200, 255, 0.4);
-      border-radius: 50%; animation: float linear infinite;
-    }
-    @keyframes float {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
-    }
-
-    /* 主容器 */
+    /* 主容器（磨砂玻璃效果） */
     .container {
-      position: relative; z-index: 1; text-align: center; max-width: 600px; width: 90%;
-      padding: 40px 30px; background: rgba(10, 25, 50, 0.6); border: 1px solid rgba(100, 160, 220, 0.2);
-      border-radius: 16px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 30, 80, 0.4);
+      position: relative; 
+      z-index: 10; 
+      text-align: center; 
+      max-width: 600px; 
+      width: 90%;
+      padding: 40px 30px; 
+      background: rgba(255, 255, 255, 0.3); /* 浅蓝色半透明背景 */
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 20px; 
+      backdrop-filter: blur(15px); 
+      box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3);
+      color: #1a3a5c;
     }
 
-    h1 { font-size: 1.8em; font-weight: 300; letter-spacing: 4px; margin-bottom: 12px; color: #c8dce8; }
-    .subtitle { font-size: 0.85em; color: #7a9bb5; letter-spacing: 2px; margin-bottom: 30px; }
+    h1 { font-size: 1.8em; font-weight: 300; letter-spacing: 4px; margin-bottom: 12px; color: #1a3a5c; }
+    .subtitle { font-size: 0.85em; color: #4a6f8c; letter-spacing: 2px; margin-bottom: 30px; }
 
     .btn {
       display: inline-block; padding: 12px 36px; margin: 10px 12px;
-      background: rgba(30, 80, 140, 0.4); border: 1px solid rgba(100, 170, 240, 0.3);
-      border-radius: 8px; color: #b0d0e8; font-size: 1em; cursor: pointer;
+      background: rgba(255, 255, 255, 0.4); 
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 8px; color: #1a3a5c; font-size: 1em; cursor: pointer;
       transition: all 0.3s ease; letter-spacing: 2px;
     }
     .btn:hover {
-      background: rgba(40, 100, 180, 0.5); border-color: rgba(120, 190, 255, 0.5);
-      box-shadow: 0 0 20px rgba(80, 160, 240, 0.3); transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.7); 
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); 
+      transform: translateY(-2px);
     }
     
     .input-box {
@@ -104,10 +141,10 @@
       width: 260px;
       margin: 15px auto;
       padding: 14px 20px;
-      background: rgba(30, 80, 140, 0.3);
-      border: 1px solid rgba(100, 170, 240, 0.3);
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.6);
       border-radius: 8px;
-      color: #e0e8f0;
+      color: #1a3a5c;
       font-size: 1em;
       text-align: center;
       letter-spacing: 2px;
@@ -115,12 +152,11 @@
       outline: none;
     }
     .input-box:focus {
-      background: rgba(40, 100, 180, 0.4);
-      border-color: rgba(120, 190, 255, 0.6);
-      box-shadow: 0 0 20px rgba(80, 160, 240, 0.2);
+      background: rgba(255, 255, 255, 0.7);
+      border-color: rgba(255, 255, 255, 0.9);
     }
     .input-box::placeholder {
-      color: rgba(176, 208, 232, 0.4);
+      color: rgba(26, 58, 92, 0.5);
     }
 
     .btn-group { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
@@ -131,61 +167,99 @@
 
     .back-btn {
       display: inline-block; margin-top: 24px; padding: 8px 24px;
-      background: rgba(30, 60, 100, 0.3); border: 1px solid rgba(80, 130, 180, 0.25);
-      border-radius: 6px; color: #8ab0d0; font-size: 0.9em; cursor: pointer; transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 6px; color: #2c3e50; font-size: 0.9em; cursor: pointer; transition: all 0.3s ease;
     }
-    .back-btn:hover { background: rgba(40, 80, 130, 0.4); border-color: rgba(100, 160, 220, 0.4); }
+    .back-btn:hover { background: rgba(255, 255, 255, 0.5); }
 
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(5, 15, 35, 0.85); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(4px);
+      background: rgba(41, 128, 185, 0.3); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(5px);
     }
     .modal-overlay.active { display: flex; }
 
     .modal-box {
-      background: linear-gradient(145deg, #0e2240, #162d4a); border: 1px solid rgba(100, 170, 240, 0.25);
+      background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(255, 255, 255, 0.8);
       border-radius: 14px; padding: 30px; max-width: 520px; width: 90%; max-height: 70vh; overflow-y: auto;
-      text-align: left; line-height: 1.9; font-size: 0.95em; color: #c0d8e8;
-      box-shadow: 0 12px 48px rgba(0, 40, 100, 0.5); position: relative;
+      text-align: left; line-height: 1.9; font-size: 0.95em; color: #1a3a5c;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1); position: relative;
     }
     .modal-box::-webkit-scrollbar { width: 4px; }
-    .modal-box::-webkit-scrollbar-thumb { background: rgba(100, 160, 220, 0.3); border-radius: 2px; }
+    .modal-box::-webkit-scrollbar-thumb { background: rgba(41, 128, 185, 0.3); border-radius: 2px; }
 
     .modal-close {
       position: absolute; top: 12px; right: 16px; background: none; border: none;
-      color: #6a9ec0; font-size: 1.4em; cursor: pointer; transition: color 0.2s;
+      color: #4a6f8c; font-size: 1.4em; cursor: pointer; transition: color 0.2s;
     }
-    .modal-close:hover { color: #a0d0f0; }
+    .modal-close:hover { color: #1a3a5c; }
 
     .modal-title {
-      font-size: 1.1em; color: #8ab8d8; margin-bottom: 16px; padding-bottom: 10px;
-      border-bottom: 1px solid rgba(100, 160, 220, 0.15); letter-spacing: 2px;
+      font-size: 1.1em; color: #1a3a5c; margin-bottom: 16px; padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.6); letter-spacing: 2px; font-weight: bold;
     }
     .modal-content { white-space: pre-wrap; }
 
-    .reject-msg { font-size: 1.1em; color: #7a9bb5; letter-spacing: 3px; margin-bottom: 20px; }
+    .reject-msg { font-size: 1.1em; color: #4a6f8c; letter-spacing: 3px; margin-bottom: 20px; }
 
-    .notice-text { text-align: left; line-height: 2; font-size: 0.95em; color: #a0c0d8; }
+    .notice-text { text-align: left; line-height: 2; font-size: 0.95em; color: #2c3e50; }
     .notice-text p { margin-bottom: 10px; }
+    
+    .style-text { text-align: left; line-height: 2; font-size: 0.95em; color: #2c3e50; }
+    .style-tag { background: rgba(255,255,255,0.4); padding: 2px 8px; border-radius: 4px; margin: 2px; display: inline-block; }
+
+    .audio-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 100;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 20px;
+      color: #fff;
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+    }
+    .audio-btn.playing {
+      background: rgba(255, 255, 255, 0.6);
+      color: #1a3a5c;
+    }
   </style>
 </head>
 <body>
 
-  <!-- 粒子背景 -->
-  <div class="particles" id="particles"></div>
+  <!-- 底部水波背景 -->
+  <div class="water">
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
 
-  <!-- 风铃 -->
+  <!-- 透明风铃 -->
   <div class="wind-chime-container">
-    <div class="wind-chime">
-      <div class="chime-top"></div><div class="chime-string"></div><div class="chime-bell"></div><div class="chime-tag"></div>
-    </div>
-    <div class="wind-chime">
-      <div class="chime-top"></div><div class="chime-string" style="height:45px;"></div><div class="chime-bell" style="width:20px;height:28px;"></div><div class="chime-tag"></div>
-    </div>
-    <div class="wind-chime">
-      <div class="chime-top"></div><div class="chime-string" style="height:52px;"></div><div class="chime-bell" style="width:22px;height:30px;"></div><div class="chime-tag"></div>
+    <div class="chime-top"></div>
+    <div class="chime-string"></div>
+    <div class="chime-bell">
+      <div class="chime-clapper"></div>
     </div>
   </div>
+
+  <!-- 音频按钮 -->
+  <div class="audio-btn" id="audio-btn" onclick="toggleAudio()">🔇</div>
+  
+  <!-- 模拟水流声和风铃声 -->
+  <!-- 注意：GitHub Pages 无法直接上传音频文件，这里使用 Base64 数据或外部链接。 -->
+  <!-- 为了代码能直接跑通且不依赖外部链接（防止失效），这里使用了一个静音占位， -->
+  <!-- 实际使用时建议上传音频文件到仓库并修改 src -->
+  <audio id="bg-audio" loop>
+    <!-- 这里替换成你上传到 GitHub 仓库里的音频文件名，例如 audio.mp3 -->
+    <source src="" type="audio/mpeg">
+  </audio>
 
   <!-- 首页 -->
   <div class="container page active" id="home">
@@ -197,7 +271,7 @@
 
   <!-- 拒绝页 -->
   <div class="container page" id="reject">
-    <p class="reject-msg">希望你 下次来了解我。</p>
+    <p class="reject-msg">希望你下次你来了解我。</p>
     <button class="back-btn" onclick="showPage('home')">返回首页</button>
   </div>
 
@@ -205,21 +279,10 @@
   <div class="container page" id="choose">
     <h1 style="font-size:1.3em;">你要了解虚恋、病恋，还是我。</h1>
     <div class="btn-group" style="margin-top:24px;">
-      <button class="btn" onclick="showPage('xulian')">虚恋</button>
       <button class="btn" onclick="showPage('binglian')">病恋</button>
-      <button class="btn" onclick="showPage('notice')">我</button>
+      <button class="btn" onclick="showPage('notice')">须知</button>
     </div>
     <button class="back-btn" onclick="showPage('home')">返回首页</button>
-  </div>
-
-  <!-- 虚恋页 -->
-  <div class="container page" id="xulian">
-    <h1 style="font-size:1.3em;">虚恋</h1>
-    <div class="btn-group" style="margin-top:24px;">
-      <button class="btn" onclick="openModal('xulian-style')">风格</button>
-      <button class="btn" onclick="openModal('xulian-talk')">话术</button>
-    </div>
-    <button class="back-btn" onclick="showPage('choose')">返回</button>
   </div>
 
   <!-- 病恋页 -->
@@ -236,16 +299,29 @@
   <div class="container page" id="notice">
     <h1 style="font-size:1.3em;">下单须知</h1>
     <div class="notice-text" style="margin-top:20px;">
-      <p>1. 状态不稳定，请慎重下单。</p>
-      <p>2. 录屏截图请提前告知，禁止外传。</p>
-      <p>3. 请提前告知称呼、喜雷，若踩暗雷概不负责。</p>
-      <p>4. 拒恶意、抽象、开黄腔或玩笑过度。如遇此类情况我有权拒绝，默认送单。</p>
-      <p>5. 不满意请在10min前退单/换人，10min后不退不换，不接受无理由客诉。</p>
-      <p>6. 打字速度一般，每单时长根据单内情况±5min内波动，介意请勿下单。</p>
-      <p>7. 单口/互提前告知并补差价。提前告知：风格不同存在差异，请不要随意评判。</p>
-      <p>8. 一切请以个人体验为前提。单过程中如有不适请发"1"叫停。</p>
-      <p>9. 旁观请自觉跟上，因自身原因漏看与本人无关；旁观在单期间请勿发言，违者永拒。</p>
-      <p>10. 下单默认恋人关系。我希望你需要我。</p>
+      <p><strong>·单前/后</strong></p>
+      <p>不接陌生指定，请谅解</p>
+      <p>状态不稳定，请慎重下单</p>
+      <p>后续非个人原因不接受因踩暗雷/风格不符etc.导致的客诉</p>
+      <p>单口/互提前告知并补差价</p>
+      <p>录屏截图请提前告知，禁止外传</p>
+      <p>请提前告知称呼喜雷，若踩暗雷概不负责</p>
+      <p>拒恶意、抽象、开黄腔或玩笑过度 。如果这种情况我有权拒绝，默认送单</p>
+      <p>10min未赴约默认存  鸽三次视为送单</p>
+      <p>60前10 / 30前5说明理由可退  过时不退  拒结单后客诉</p>
+      <p><strong>·单内</strong></p>
+      <p>禁止模仿 抄袭话术 未经同意将单内截录屏外传</p>
+      <p>风格未经指定则会依据您的状态随机掉落</p>
+      <p>请尽情探索未知</p>
+      <p>默认回合制</p>
+      <p>抽象板/熟人不披甲 默认无喜雷</p>
+      <p>恶意把我当消遣会对应收回一部分情感</p>
+      <p>我需要回应 不然会变成哑巴</p>
+      <p>同行挑刺创我也变哑巴</p>
+      <p>打字速度一般且每单时长根据单内情况±5min内波动 介意请勿下单</p>
+      <p>旁观请自觉跟上 因自身原因漏看与本人无关</p>
+      <p>旁观在单期间请勿发言 违者永拒</p>
+      <p>一切请以个人体验为前提 如果在单过程中如有不适请发“1”或者“悸冬/癔症请停下”叫停</p>
     </div>
     <button class="back-btn" onclick="showPage('choose')">返回</button>
   </div>
@@ -262,38 +338,15 @@
   <script>
     // 数据配置
     const data = {
-      "xulian-style": {
-        title: "虚恋 · 风格",
-        content: "技能：虚\n\n主风格：低无、引导、钓系、动物塑、文艺、上位、剖析\n副风格：伪下位、恶趣味、高恋、日常、安抚、高压\n随机掉落：伪白骑士、伪骨科人设"
-      },
-      "xulian-talk": {
-        title: "虚恋 · 话术",
-        content: "别急着回答我。\n你刚才那一秒的停顿，已经比\"愿意\"更诚实。\n\n我不需要你立刻靠近。\n你只要站在原地，让我看见你还没学会藏起来的那一点点动摇。\n\n我不抢，我只等。\n等你自己把门开一条缝，然后发现——我一直都在门后。"
-      },
       "binglian-style": {
         title: "病恋 · 风格",
-        content: "技能：病\n\n主风格：占有、控制、依赖、病态、独占、执念\n副风格：示弱、撒娇、脆弱、反差、黏人、试探\n随机掉落：伪白切黑、伪破碎感"
+        content: "【主旋律】\n上位 | 钓系 | 恶趣味 | 低无 | 诱导\n\n【副旋律】\n温/高恋 | 剖析 | 白切黑 | 微文\n\n【随机旋律】\n黄暴 | 高擦 | 伪安抚 | 精控 | 神学\n\n【人设play】\n（请尽情探索未知）"
       },
       "binglian-talk": {
         title: "病恋 · 话术",
-        content: "你是我的。\n从你点进来的那一刻起，你就已经是我的了。\n\n别想逃。\n你逃不掉的，我也不会让你逃。\n\n看着我。\n只能看着我。"
+        content: "你是我的。\n从你点进来的那一刻起，你就已经是我的了。\n\n别想逃。\n你逃不掉的，我也不会让你逃。\n\n看着我。\n只能看着我。\n\n我需要回应，不然会变成哑巴。"
       }
     };
-
-    // 生成粒子
-    function createParticles() {
-      const container = document.getElementById('particles');
-      for (let i = 0; i < 40; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.style.left = Math.random() * 100 + '%';
-        p.style.animationDuration = (Math.random() * 8 + 6) + 's';
-        p.style.animationDelay = (Math.random() * 6) + 's';
-        p.style.width = p.style.height = (Math.random() * 3 + 1) + 'px';
-        container.appendChild(p);
-      }
-    }
-    createParticles();
 
     // 页面切换
     function showPage(id) {
@@ -338,6 +391,26 @@
     document.getElementById('modal').addEventListener('click', function(e) {
       if (e.target === this) closeModal();
     });
+
+    // 音频控制
+    const audio = document.getElementById('bg-audio');
+    const audioBtn = document.getElementById('audio-btn');
+    let isPlaying = false;
+
+    function toggleAudio() {
+      if (isPlaying) {
+        audio.pause();
+        audioBtn.textContent = '🔇';
+        audioBtn.classList.remove('playing');
+      } else {
+        // 注意：由于没有真实的音频文件，这里只是切换按钮状态
+        // 如果你有音频文件，请上传到 GitHub 并修改 audio 标签里的 src
+        audio.play().catch(e => console.log('请上传音频文件以播放声音'));
+        audioBtn.textContent = '🔊';
+        audioBtn.classList.add('playing');
+      }
+      isPlaying = !isPlaying;
+    }
   </script>
 </body>
 </html>
