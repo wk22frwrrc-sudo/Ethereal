@@ -1,4 +1,159 @@
-  <footer>生死相依 · BOUND TOGETHER IN LIFE AND DEATH 配樂 · 《長生樹》· 在虛無中永存 · 循環播放</footer>
+  <!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>生死相依</title>
+<style>
+/* 黑灰主题 */
+:root{--bg:#17171b;--bg2:#1e1e24;--sheet:#232329;--ink:#dedcd8;--ink2:#a5a29c;--ink3:#79766f;--line:#33333b;--hair:#2a2a31}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.9;font-family:"Songti SC","Noto Serif CJK SC","STSong",SimSun,Georgia,serif}
+h1,h2{font-weight:500;margin:0}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+.wrap{width:min(700px,100%);margin:0 auto;padding:0 20px}
+.en{display:block;font-family:Georgia,serif;font-style:italic;font-size:12.5px;letter-spacing:.08em;color:var(--ink3);line-height:1.7}
+.en.up{font-style:normal;font-size:10px;letter-spacing:.16em;text-transform:uppercase}
+
+/* 开场浮现 */
+#intro{position:fixed;inset:0;z-index:100;background:#101014;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:36px;text-align:center;padding:30px;transition:opacity 1.5s,visibility 1.5s}
+#intro.gone{opacity:0;visibility:hidden}
+.line{opacity:0;transform:translateY(10px);transition:opacity 2.2s,transform 2.2s}
+.line.show{opacity:1;transform:none}
+.line b{display:block;font-weight:500;font-size:clamp(18px,5.2vw,28px);letter-spacing:.2em;color:#e4e2de}
+.line.dim b{color:#c9c6c1}
+.line i{margin-top:10px}
+#skip{position:absolute;right:14px;bottom:16px;min-height:44px;padding:10px 14px;border-radius:999px;border:1px solid rgba(225,225,225,.2);color:#8b8892;font-family:Georgia,serif;font-size:11px;letter-spacing:.18em}
+
+/* 头部 + 置顶导航 */
+header{padding:44px 0 20px;text-align:center;background:linear-gradient(var(--bg2),var(--bg))}
+h1{font-size:clamp(30px,8vw,44px);letter-spacing:.36em;text-indent:.36em}
+.hair{height:1px;background:var(--line);width:84px;margin:20px auto 0}
+#app{opacity:0;transition:opacity 1.3s}
+#app.on{opacity:1}
+nav{position:sticky;top:0;z-index:40;background:rgba(23,23,27,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.row{display:flex;padding:6px 0}
+.tab{flex:1 1 0;min-width:0;min-height:62px;padding:9px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border-radius:10px;color:var(--ink3);white-space:nowrap;transition:background .25s}
+.tab b{font-weight:500;font-size:clamp(15px,4.2vw,18px);letter-spacing:.16em;color:var(--ink)}
+.tab:hover{background:var(--sheet)}
+.tab[aria-current="true"]{background:var(--sheet);box-shadow:inset 0 -2px 0 var(--ink3)}
+
+/* 内容 */
+main{padding:30px 0 70px;min-height:52vh}
+.view{animation:fade .6s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#home{text-align:center;padding:20px 0 6px}
+#home .mood{font-size:clamp(17px,4.6vw,21px);letter-spacing:.18em;margin:0 0 12px}
+#home .hint{color:var(--ink3);font-size:14px;margin:0}
+.sheet{background:var(--sheet);border:1px solid var(--line);border-radius:16px;padding:clamp(22px,6vw,36px) clamp(18px,6vw,32px)}
+.sheet>h2{text-align:center;font-size:clamp(23px,6.4vw,30px);letter-spacing:.26em;text-indent:.26em}
+.sheet>.en{text-align:center;margin:8px 0 2px}
+.divider{height:1px;background:var(--hair);margin:24px 0}
+.sub{font-size:14px;letter-spacing:.2em;color:var(--ink3);margin:0 0 10px;text-align:center}
+.field{padding:13px 0;border-bottom:1px dashed var(--hair);font-size:clamp(16px,4.4vw,18px);letter-spacing:.08em}
+.field:last-of-type{border-bottom:0}
+.field b{font-weight:500;color:var(--ink2);margin-right:.3em}
+.field .en{margin-top:2px;font-size:12px}
+ol{counter-reset:n;margin:0;padding:0;list-style:none;display:grid;gap:20px}
+ol li{display:grid;gap:2px}
+ol li::before{content:counter(n,decimal-leading-zero);counter-increment:n;font-family:Georgia,serif;font-size:11px;letter-spacing:.16em;color:var(--ink3)}
+ol .cn{font-size:clamp(15px,4.2vw,17px)}
+.back{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;margin-top:28px;border:1px solid var(--line);border-radius:12px;letter-spacing:.24em;font-size:15px;color:var(--ink2)}
+.back:hover{background:var(--ink);color:var(--bg)}
+footer{padding:24px 0 42px;text-align:center;color:var(--ink3);font-size:11.5px;letter-spacing:.14em;line-height:2;border-top:1px solid var(--line);background:var(--bg2)}
+
+/* 音乐 */
+#music{position:fixed;right:16px;bottom:18px;z-index:60;width:52px;height:52px;border-radius:50%;background:var(--sheet);border:1px solid var(--line);font-size:19px;color:var(--ink2)}
+#music[aria-pressed="true"]{color:var(--ink)}
+#cue{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:61;min-height:44px;padding:11px 20px;border-radius:999px;background:var(--ink);color:var(--bg);font-size:13.5px;letter-spacing:.14em}
+@media (max-width:420px){.tab b{font-size:15px;letter-spacing:.08em}.wrap{padding:0 14px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<!-- 开场 -->
+<div id="intro">
+  <p class="line"><b>如果生與死沒有區別&emsp;怎麼抉擇呢</b>
+  <i class="en">If there is no difference between life and death&emsp;How would you make a decision.</i></p>
+  <p class="line dim"><b>看到生與死的界限&emsp;你也看到了我</b>
+  <i class="en">You see the border between life and death&emsp;and in it, you see me.</i></p>
+  <button id="skip" type="button">skip</button>
+</div>
+
+<!-- 主体 -->
+<div id="app">
+  <header><div class="wrap">
+    <h1>生死相依</h1>
+    <span class="en">Bound together in life and death.</span>
+    <div class="hair"></div>
+  </div></header>
+
+  <nav><div class="wrap"><div class="row">
+    <button class="tab" type="button" data-view="about" data-primary-action><b>關於我</b><span class="en up">About me</span></button>
+    <button class="tab" type="button" data-view="xu"><b>虛戀</b><span class="en up">Illusory</span></button>
+    <button class="tab" type="button" data-view="bing"><b>病戀</b><span class="en up">Sick</span></button>
+    <button class="tab" type="button" data-view="nue"><b>虐戀</b><span class="en up">In pain</span></button>
+    <button class="tab" type="button" data-view="notice"><b>須知</b><span class="en up">Notice</span></button>
+  </div></div></nav>
+
+  <main class="wrap">
+    <section class="view" id="home">
+      <p class="mood">虛戀&emsp;病戀&emsp;虐戀</p>
+      <p class="hint">點擊上方任一項即可查看</p>
+    </section>
+
+    <section class="view sheet" id="about" hidden>
+      <h2>關於我</h2><span class="en">About me</span><div class="divider"></div>
+      <p class="sub">基本資料</p>
+      <div class="field"><b>我的名字：</b>R<span class="en">My name: R</span></div>
+      <div class="field"><b>性別：</b>女<span class="en">Gender: female</span></div>
+      <div class="field"><b>星座：</b>射手座<span class="en">Zodiac: Sagittarius</span></div>
+      <div class="field"><b>年齡：</b>18<span class="en">Age: 18</span></div>
+      <div class="field"><b>MBTI：</b>INFP<span class="en">MBTI: INFP</span></div>
+      <div class="field"><b>屬性：</b>雙<span class="en">Attribute: bi</span></div>
+      <button class="back" type="button" data-back>返回 🔙</button>
+    </section>
+
+    <section class="view sheet" id="xu" hidden>
+      <h2>虛戀</h2><span class="en">Illusory love</span><div class="divider"></div>
+      <p class="sub">風格</p>
+      <div class="field"><b>主：</b>釣系&emsp;引導&emsp;勾引<span class="en">Main: teasing · guiding · alluring</span></div>
+      <div class="field"><b>副：</b>暫無<span class="en">Secondary: none yet</span></div>
+      <div class="field"><b>隨機掉落：</b>暫無<span class="en">Random drop: none yet</span></div>
+      <button class="back" type="button" data-back>返回 🔙</button>
+    </section>
+
+    <section class="view sheet" id="bing" hidden>
+      <h2>病戀</h2><span class="en">Sick love</span><div class="divider"></div>
+      <p class="sub">風格</p>
+      <div class="field">正在虛心學習…<span class="en">Still learning, humbly…</span></div>
+      <button class="back" type="button" data-back>返回 🔙</button>
+    </section>
+
+    <section class="view sheet" id="nue" hidden>
+      <h2>虐戀</h2><span class="en">Love in pain</span><div class="divider"></div>
+      <p class="sub">風格</p>
+      <div class="field"><b>主：</b>低無&emsp;引導<span class="en">Main: low-key · guiding</span></div>
+      <div class="field"><b>副：</b>暫無<span class="en">Secondary: none yet</span></div>
+      <div class="field"><b>隨機掉落：</b>涉三（可能）<span class="en">Random drop: possible</span></div>
+      <button class="back" type="button" data-back>返回 🔙</button>
+    </section>
+
+    <section class="view sheet" id="notice" hidden>
+      <h2>須知</h2><span class="en">Please read before we start</span><div class="divider"></div>
+      <ol>
+        <li><span class="cn">狀態不穩定，如果與填寫的不符抱歉，可以退款。</span><span class="en">My state is unstable; if it differs from what is written here, I am sorry — a refund is available.</span></li>
+        <li><span class="cn">我不拒熟人，但是請不要搗亂。</span><span class="en">I don't refuse people I know, but please don't come to make trouble.</span></li>
+        <li><span class="cn">如果你覺得不舒服，可以告訴我「你不太好」，我會停止說話。可以小窗告訴我，也可以當場告訴我。</span><span class="en">If you feel uncomfortable, tell me「你不太好」and I will stop talking — privately or right there.</span></li>
+        <li><span class="cn">我很溫良，不用害怕。</span><span class="en">I am gentle; there is nothing to fear.</span></li>
+        <li><span class="cn">不可以找事，我溫良不代表我沒有脾氣。</span><span class="en">Don't pick a fight — gentle doesn't mean no temper.</span></li>
+      </ol>
+      <button class="back" type="button" data-back>返回 🔙</button>
+    </section>
+  </main>
+    <footer>生死相依 · BOUND TOGETHER IN LIFE AND DEATH 配樂 · 《長生樹》· 在虛無中永存 · 循環播放</footer>
 </div>
 
 <!-- 音乐 -->
