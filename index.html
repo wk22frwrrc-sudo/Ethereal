@@ -1,434 +1,66 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>三恋资料</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+  <footer>生死相依 · BOUND TOGETHER IN LIFE AND DEATH 配樂 · 《長生樹》· 在虛無中永存 · 循環播放</footer>
+</div>
 
-    body {
-      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-      min-height: 100vh;
-      overflow: hidden;
-      position: relative;
-      /* 真实海边背景图 */
-      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80') center/cover no-repeat fixed;
-    }
+<!-- 音乐 -->
+<button id="music" type="button" aria-pressed="false" title="《長生樹》· 在虛無中永存">♪</button>
+<button id="cue" type="button">點此開啟音樂 🔊</button>
 
-    /* 背景暗化层，让文字更清晰 */
-    .bg-overlay {
-      position: fixed; inset: 0;
-      z-index: 0;
-      background: rgba(0, 30, 60, 0.25);
-    }
+<script>
+/* 配樂：網易雲歌曲 ID 3313555607《長生樹》，循環播放；換歌只改下面 id */
+var MUSIC_URL = "https://music.163.com/song/media/outer/url?id=3313555607.mp3";
+var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+var intro = document.getElementById("intro"), app = document.getElementById("app");
+var cue = document.getElementById("cue"), musicBtn = document.getElementById("music");
+var lines = document.querySelectorAll(".line"), timers = [];
 
-    /* ===== 主容器（磨砂玻璃） ===== */
-    .container {
-      position: relative; z-index: 5;
-      max-width: 420px;
-      margin: 60px auto 40px;
-      padding: 36px 28px 32px;
-      background: rgba(255, 255, 255, 0.35);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border-radius: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-      text-align: center;
-      min-height: 400px;
-      display: none;
-    }
-    .container.active { display: block; }
+document.body.style.overflow = "hidden";
+function finish(){
+  timers.map(clearTimeout);
+  lines.forEach(function (l) { l.classList.add("show"); });
+  intro.classList.add("gone"); app.classList.add("on");
+  document.body.style.overflow = "";
+  setTimeout(function () { intro.hidden = true; }, 1600);
+}
+if (reduce) finish();
+else {
+  timers.push(setTimeout(function () { lines[0].classList.add("show"); }, 400));
+  timers.push(setTimeout(function () { lines[1].classList.add("show"); }, 4000));
+  timers.push(setTimeout(finish, 8200));
+}
 
-    /* ===== 首页 ===== */
-    .home-title {
-      font-size: 1.25em;
-      color: #fff;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      margin-bottom: 18px;
-      letter-spacing: 1px;
-      line-height: 1.6;
-    }
-    .home-info {
-      font-size: 0.85em;
-      color: rgba(255,255,255,0.9);
-      text-shadow: 0 1px 6px rgba(0,0,0,0.25);
-      margin-bottom: 32px;
-      letter-spacing: 2px;
-    }
-    .home-info span { margin: 0 4px; }
+var VIEWS = ["home", "about", "xu", "bing", "nue", "notice"];
+var tabs = document.querySelectorAll(".tab");
+function go(id){
+  VIEWS.forEach(function (v) { document.getElementById(v).hidden = v !== id; });
+  tabs.forEach(function (t) { t.setAttribute("aria-current", t.dataset.view === id ? "true" : "false"); });
+}
+tabs.forEach(function (t) { t.setAttribute("aria-current", "false"); t.addEventListener("click", function () { go(t.dataset.view); play(); }); });
+document.querySelectorAll("[data-back]").forEach(function (b) {
+  b.addEventListener("click", function () { go("home"); scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); });
+});
+document.addEventListener("keydown", function (e) { if (e.key === "Escape") go("home"); });
 
-    /* ===== 输入框 ===== */
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-    }
-    .input-box {
-      width: 70%;
-      padding: 12px 16px;
-      border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.55);
-      color: #3a5a6e;
-      font-size: 1em;
-      letter-spacing: 1px;
-      outline: none;
-      transition: all 0.3s;
-      backdrop-filter: blur(6px);
-      text-align: center;
-    }
-    .input-box::placeholder {
-      color: #7a9aaa;
-      letter-spacing: 1px;
-    }
-    .input-box:focus {
-      border-color: rgba(255,255,255,0.7);
-      background: rgba(255,255,255,0.8);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    }
-    .submit-btn {
-      width: 70%;
-      padding: 12px 0;
-      border: none;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.55);
-      color: #3a5a6e;
-      font-size: 1em;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: all 0.3s;
-      backdrop-filter: blur(6px);
-    }
-    .submit-btn:hover {
-      background: rgba(255,255,255,0.8);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-    }
-
-    /* ===== 按钮组 ===== */
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      align-items: center;
-    }
-    .btn {
-      width: 70%;
-      padding: 12px 0;
-      border: none;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.55);
-      color: #3a5a6e;
-      font-size: 1em;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: all 0.3s;
-      backdrop-filter: blur(6px);
-    }
-    .btn:hover {
-      background: rgba(255,255,255,0.8);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-    }
-
-    /* ===== 返回按钮 ===== */
-    .back-btn {
-      margin-top: 28px;
-      padding: 8px 24px;
-      border: none;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.3);
-      color: #fff;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
-      font-size: 0.85em;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .back-btn:hover { background: rgba(255,255,255,0.55); }
-
-    /* ===== 弹窗遮罩 ===== */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      z-index: 100;
-      background: rgba(0,0,0,0.45);
-      backdrop-filter: blur(6px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-overlay.active { display: flex; }
-
-    .modal-box {
-      max-width: 380px;
-      width: 90%;
-      max-height: 75vh;
-      overflow-y: auto;
-      padding: 28px 24px;
-      background: rgba(255,255,255,0.92);
-      border-radius: 20px;
-      text-align: left;
-      position: relative;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-    }
-    .modal-box::-webkit-scrollbar { width: 4px; }
-    .modal-box::-webkit-scrollbar-thumb { background: #c9d6df; border-radius: 4px; }
-
-    .modal-close {
-      position: absolute; top: 12px; right: 16px;
-      background: none; border: none;
-      font-size: 1.4em; color: #9ab;
-      cursor: pointer;
-    }
-    .modal-title {
-      font-size: 1.1em;
-      color: #3a5a6e;
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(100,140,180,0.2);
-    }
-    .modal-content {
-      font-size: 0.9em;
-      color: #4a6a7a;
-      line-height: 1.8;
-      white-space: pre-wrap;
-    }
-
-    /* ===== 提示弹窗 ===== */
-    .toast-overlay {
-      position: fixed; inset: 0;
-      z-index: 200;
-      background: rgba(0,0,0,0.35);
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-    .toast-overlay.active { display: flex; }
-    .toast-box {
-      padding: 24px 36px;
-      background: rgba(255,255,255,0.95);
-      border-radius: 16px;
-      font-size: 1em;
-      color: #3a5a6e;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-      text-align: center;
-    }
-
-    /* ===== 风铃 ===== */
-    .wind-chime {
-      position: fixed; top: 10px; right: 20px;
-      z-index: 10;
-      animation: swing 3s ease-in-out infinite;
-      transform-origin: top center;
-      cursor: pointer;
-    }
-    .wind-chime .chime-top {
-      width: 40px; height: 6px;
-      background: #c9a96e;
-      border-radius: 3px;
-      margin: 0 auto;
-    }
-    .wind-chime .chime-string {
-      width: 2px; height: 30px;
-      background: #c9a96e;
-      margin: 0 auto;
-    }
-    .wind-chime .chime-bell {
-      width: 28px; height: 28px;
-      background: radial-gradient(circle at 40% 35%, #f5e6c8, #c9a96e);
-      border-radius: 50%;
-      margin: 0 auto;
-      position: relative;
-    }
-    .wind-chime .chime-bell::after {
-      content: '';
-      position: absolute; bottom: -8px; left: 50%;
-      transform: translateX(-50%);
-      width: 2px; height: 12px;
-      background: #c9a96e;
-    }
-    .wind-chime .chime-bell::before {
-      content: '';
-      position: absolute; bottom: -14px; left: 50%;
-      transform: translateX(-50%);
-      width: 8px; height: 8px;
-      background: #c9a96e;
-      border-radius: 50%;
-    }
-    @keyframes swing {
-      0%, 100% { transform: rotate(-5deg); }
-      50%      { transform: rotate(5deg); }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- 背景暗化层 -->
-  <div class="bg-overlay"></div>
-
-  <!-- 风铃 -->
-  <div class="wind-chime">
-    <div class="chime-top"></div>
-    <div class="chime-string"></div>
-    <div class="chime-bell"></div>
-  </div>
-
-  <!-- ===== 首页 ===== -->
-  <div class="container active" id="home">
-    <div class="home-title">欢迎来到我的臆想 你要了解我吗？</div>
-    <div class="home-info">
-      <span>悸冬</span> · <span>射手</span> · <span>20</span> · <span>泛</span> · <span>INFP</span>
-    </div>
-    <div class="input-group">
-      <input class="input-box" id="home-input" type="text" placeholder="输入「要」或「不要」" autocomplete="off">
-      <button class="submit-btn" onclick="handleHomeInput()">确认</button>
-    </div>
-  </div>
-
-  <!-- ===== 选择页 ===== -->
-  <div class="container" id="choose">
-    <h2 style="font-size:1.15em;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.3);margin-bottom:24px;">你要了解虚恋、病恋，还是我？</h2>
-    <div class="btn-group">
-      <button class="btn" onclick="showPage('xulian')">虚恋</button>
-      <button class="btn" onclick="showPage('binglian')">病恋</button>
-      <button class="btn" onclick="showPage('xuzhi')">须知</button>
-    </div>
-    <button class="back-btn" onclick="showPage('home')">返回首页</button>
-  </div>
-
-  <!-- ===== 虚恋页 ===== -->
-  <div class="container" id="xulian">
-    <h2 style="font-size:1.15em;color:#3a5a6e;margin-bottom:24px;">虚恋</h2>
-    <div class="btn-group">
-      <button class="btn" onclick="openModal('xulian_style')">风格</button>
-      <button class="btn" onclick="openModal('xulian_huashu')">话术</button>
-    </div>
-    <button class="back-btn" onclick="showPage('choose')">返回</button>
-  </div>
-
-  <!-- ===== 病恋页 ===== -->
-  <div class="container" id="binglian">
-    <h2 style="font-size:1.15em;color:#3a5a6e;margin-bottom:24px;">病恋</h2>
-    <div class="btn-group">
-      <button class="btn" onclick="openModal('binglian_style')">风格</button>
-      <button class="btn" onclick="openModal('binglian_huashu')">话术</button>
-    </div>
-    <button class="back-btn" onclick="showPage('choose')">返回</button>
-  </div>
-
-  <!-- ===== 须知页 ===== -->
-  <div class="container" id="xuzhi">
-    <h2 style="font-size:1.15em;color:#3a5a6e;margin-bottom:24px;">须知</h2>
-    <div class="btn-group">
-      <button class="btn" onclick="openModal('xuzhi_content')">查看须知</button>
-    </div>
-    <button class="back-btn" onclick="showPage('choose')">返回</button>
-  </div>
-
-  <!-- ===== 弹窗 ===== -->
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="modal-box">
-      <button class="modal-close" onclick="closeModal()">×</button>
-      <div class="modal-title" id="modal-title"></div>
-      <div class="modal-content" id="modal-content"></div>
-    </div>
-  </div>
-
-  <!-- ===== 提示弹窗 ===== -->
-  <div class="toast-overlay" id="toast-overlay" onclick="closeToast()">
-    <div class="toast-box" id="toast-box"></div>
-  </div>
-
-  <!-- 真实海浪声 -->
-  <audio id="ocean-sound" loop preload="auto">
-    <source src="https://cdn.pixabay.com/audio/2022/03/24/audio_74ae7e0d2a.mp3" type="audio/mpeg">
-  </audio>
-
-  <script>
-    // ===== 页面切换 =====
-    function showPage(id) {
-      document.querySelectorAll('.container').forEach(p => p.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
-
-    // ===== 首页输入处理 =====
-    function handleHomeInput() {
-      const input = document.getElementById('home-input');
-      const val = input.value.trim();
-      if (val === '要') {
-        input.value = '';
-        showPage('choose');
-        // 播放海浪声
-        const audio = document.getElementById('ocean-sound');
-        audio.volume = 0.3;
-        audio.play().catch(() => {});
-      } else if (val === '不要') {
-        input.value = '';
-        showReject();
-      } else {
-        input.value = '';
-        input.placeholder = '请输入「要」或「不要」';
-      }
-    }
-
-    // 回车也能提交
-    document.getElementById('home-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') handleHomeInput();
-    });
-
-    // ===== 拒绝弹窗 =====
-    function showReject() {
-      const overlay = document.getElementById('toast-overlay');
-      const box = document.getElementById('toast-box');
-      box.textContent = '那……下次再了解我吧 ';
-      overlay.classList.add('active');
-      setTimeout(closeToast, 2000);
-    }
-    function closeToast() {
-      document.getElementById('toast-overlay').classList.remove('active');
-    }
-
-    // ===== 弹窗内容 =====
-    const modalData = {
-      xulian_style: {
-        title: '虚恋 · 风格',
-        content: '虚恋是一种轻盈、朦胧的情感表达，\n像海风拂过，不留痕迹却令人心动。\n\n风格关键词：\n· 若即若离\n· 诗意留白\n· 温柔克制'
-      },
-      xulian_huashu: {
-        title: '虚恋 · 话术',
-        content: '「今晚的月亮很像你。」\n「风来的时候，我想起你。」\n「我们之间，隔着一片海。」\n\n—— 不说爱，却处处是爱。'
-      },
-      binglian_style: {
-        title: '病恋 · 风格',
-        content: '病恋是浓烈、执拗的占有与依赖，\n像潮水般汹涌，无法退去。\n\n风格关键词：\n· 极致占有\n· 情绪拉扯\n· 病态依恋'
-      },
-      binglian_huashu: {
-        title: '病恋 · 话术',
-        content: '「你是我的，只能是我的。」\n「别离开我，我会疯的。」\n「就算你讨厌我，我也要缠着你。」\n\n—— 爱到极致，便是病。'
-      },
-      xuzhi_content: {
-        title: '须知',
-        content: '1. 本页面为个人创作，仅供欣赏。\n2. 虚恋与病恋均为虚构情感设定。\n3. 请勿将虚构内容代入现实关系。\n4. 如有不适，请及时退出页面。\n\n 愿你被温柔以待。'
-      }
-    };
-
-    function openModal(key) {
-      const data = modalData[key];
-      if (!data) return;
-      document.getElementById('modal-title').textContent = data.title;
-      document.getElementById('modal-content').textContent = data.content;
-      document.getElementById('modal-overlay').classList.add('active');
-    }
-    function closeModal() {
-      document.getElementById('modal-overlay').classList.remove('active');
-    }
-
-    // 点击遮罩关闭弹窗
-    document.getElementById('modal-overlay').addEventListener('click', function(e) {
-      if (e.target === this) closeModal();
-    });
-  </script>
+var song = new Audio(MUSIC_URL);
+song.loop = true; song.preload = "auto"; song.volume = 0.75;
+var on = false;
+function mark(s){ on = s; musicBtn.setAttribute("aria-pressed", s ? "true" : "false"); if (s) cue.hidden = true; }
+function play(){
+  if (on) return;
+  var p = song.play();
+  if (p && p.then) p.then(function () { mark(true); }, function () { cue.hidden = false; });
+  else mark(true);
+}
+musicBtn.addEventListener("click", function () {
+  if (on) { song.pause(); mark(false); } else play();
+});
+cue.addEventListener("click", play);
+document.getElementById("skip").addEventListener("click", function () { finish(); play(); });
+document.addEventListener("pointerdown", function (e) {
+  if (e.target === musicBtn || e.target === cue) return;
+  play();
+}, { passive: true });
+addEventListener("pagehide", function () { song.pause(); });
+play();
+</script>
 </body>
 </html>
